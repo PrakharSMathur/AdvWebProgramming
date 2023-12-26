@@ -1,13 +1,32 @@
 import { useEffect, useState } from 'react'
 import { Table } from 'semantic-ui-react'
+import DeparturesList from './DeparturesList.jsx'
+
 
 function AirportList({textForButton, getAirportID}) {
   const [airports, setAirports] = useState([])
+  const [forceUpdate, setForceUpdate] = useState(false);
+  let [airportID, setAirportID] = useState("no id")
+  let [departureCount, setDepartureCount] = useState(" - ")
+  let [arrivalCount, setArrivalCount] = useState(" - ")
+  function handleDepartureCountChange(dataFromButton){
+    setDepartureCount(dataFromButton)
+    console.log(departureCount);
+  }
+  function handleArrivalCountChange(dataFromButton){
+    setArrivalCount(dataFromButton)
+    console.log(arrivalCount);
+  }
+  function handleAirportIDChange(dataFromButton) {
+    setAirportID(dataFromButton);
+  }
+  
 
   function handleClick(){
-    const airportID = event.target.id;
-    console.log(airportID);
+    // const airportID = event.target.id;
+    setAirportID(event.target.id);
     getAirportID(airportID);
+    setForceUpdate((prev) => !prev); // Toggle the dummy state to force a re-render
   }
 
   function addAirports(data){
@@ -54,15 +73,21 @@ function AirportList({textForButton, getAirportID}) {
         <Table.Body>
           {airports.map((airport, index) => (
             <Table.Row key={index}>
-              <Table.Cell>{airport.iata}</Table.Cell>
-              <Table.Cell>{airport.name}</Table.Cell>
-              <Table.Cell> - - </Table.Cell>
-              <Table.Cell> - - </Table.Cell>
-              <Table.Cell><button id={airport.iata} onClick={handleClick}> {textForButton} </button></Table.Cell>
+              <Table.Cell id={airport.iata}>{airport.iata}</Table.Cell>
+              <Table.Cell id={airport.iata}>{airport.name}</Table.Cell>
+              <Table.Cell id={airport.iata}>{arrivalCount}</Table.Cell>
+              <Table.Cell id={airport.iata}>{departureCount}</Table.Cell>
+              <Table.Cell id={airport.iata}><button id={airport.iata} onClick={handleClick}> {textForButton} </button></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
+
+      {airportID !== "no id" && (
+        <DeparturesList key={forceUpdate} 
+          text={airportID} 
+          getCount={handleDepartureCountChange}/>
+      )}
     </div>
   );
 
@@ -70,15 +95,3 @@ function AirportList({textForButton, getAirportID}) {
 
 
 export default AirportList
-
-// export default function AirportList({textForButton, funtionFromParent})
-// {
-//   function handleClick(){
-//     funtionFromParent("data from button")
-//   }
-//   return <button onClick={handleClick}>{textForButton}</button>
-// }
-
-// export default function AirportList(text){
-//   return <p>Text to display is: {text}</p>
-// }

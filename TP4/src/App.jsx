@@ -7,13 +7,19 @@ import AirportList from './AirportList.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
-  let [airportID, setAirportID] = useState("Loading in progress...")
-  function giveButtonDataToParagraph(dataFromButton){
-          //setAirportID(dataFromButton)
-        }
+  let [airportID, setAirportID] = useState("no id")
+  let [departureCount, setDepartureCount] = useState(" - ")
+  let [arrivalCount, setArrivalCount] = useState(" - ")
+  function handleDepartureCountChange(dataFromButton){
+    setDepartureCount(dataFromButton)
+    console.log(departureCount);
+  }
+  function handleArrivalCountChange(dataFromButton){
+    setArrivalCount(dataFromButton)
+    console.log(arrivalCount);
+  }
   function handleAirportIDChange(dataFromButton) {
     setAirportID(dataFromButton);
-
   }
 
   return (
@@ -36,16 +42,17 @@ function App() {
           getAirportID={handleAirportIDChange}/>
         {/* <DeparturesList text={airportID}/> */}
         
-        {airportID !== "Loading in progress..." && (
-          <DeparturesList text={airportID} />
-        )}
+        {/* {airportID !== "no id" && (
+          <DeparturesList text={airportID} 
+            getDepartureCount={handleDepartureCountChange}/>
+        )} */}
 
         {/* <AirportList /> */}
         {/* <DeparturesList text="BRU"/> */}
         
       </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        Authors: Ankush KUMAR & Prakhar MATHUR
       </p>
     </>
   )

@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Table } from 'semantic-ui-react'
 
-function DeparturesList({text}) {
+function DeparturesList({text, getCount}) {
   const [flights, setFlights] = useState([])
+  const [numberOfFlights, setnumberOfFlights] = useState([])
   const airportID = text
-
   function addFlights(data){
     setFlights(data)
   }
+  getCount(numberOfFlights);
   
   const fetchDepartures = async (airportID) => {
     try {
         // Make the API call using fetch
-        // console.log(airportID)
+        console.log(airportID)
         let url = 'https://www.skyscanner.com/g/arrival-departure-svc/api/airports/'+airportID+'/departures';
         const response = await fetch(url);
 
@@ -25,8 +26,9 @@ function DeparturesList({text}) {
         const data = await response.json();
 
         // Assuming data.departures is the array you want to update the state with
-        //console.log(data.departures)
+        console.log(data.departures)
         addFlights(data.departures)
+        setnumberOfFlights(data.departures.length);
     } catch (error) {
         console.error('Error fetching data:', error.message);
     }
@@ -66,14 +68,3 @@ function DeparturesList({text}) {
 };
 
 export default DeparturesList
-
-// export default function DeparturesList(text){
-//   return <p>Text to display is: {text}</p>
-// }
-
-// export default function DeparturesList({textForButton, funtionFromParent}){
-//   function handleClick(){
-//     funtionFromParent("data from button")
-//   }
-//   return <button onClick={handleClick}>{textForButton}</button>
-// }
