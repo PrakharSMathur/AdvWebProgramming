@@ -1,50 +1,64 @@
 import { useEffect, useState } from 'react'
 import { Table } from 'semantic-ui-react'
 import DeparturesList from './DeparturesList.jsx'
+import ArrivalsList from './ArrivalsList.jsx'
 
 
 function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) {
   const [airports, setAirports] = useState([])
   const [departures, setDepartures] = useState([])
   const [arrivals, setArrivals] = useState([])
-  getArrivals(arrivals);
-  getDepartures(departures);
-
   const [forceUpdate, setForceUpdate] = useState(false);
-  let [airportID, setAirportID] = useState("no id")
-  let [departureCount, setDepartureCount] = useState(" - ")
-  let [arrivalCount, setArrivalCount] = useState(" - ")
+  const [refreshTimestamp, setRefreshTimestamp] = useState({});
 
-  function handleDepartureCountChange(dataFromButton){
-    setDepartureCount(dataFromButton)
-    // console.log(departureCount);
+  // Using an object to store arrival and departure counts for each airport
+  const [counts, setCounts] = useState({});
+
+  const [airportID, setAirportID] = useState("no id");
+
+  function handleDepartureCountChange(dataFromButton, airportId) {
+    setCounts((prevCounts) => ({
+      ...prevCounts,
+      [airportId]: {
+        ...prevCounts[airportId],
+        departureCount: dataFromButton,
+      },
+    }));
   }
-  function handleArrivalCountChange(dataFromButton){
-    setArrivalCount(dataFromButton)
-    // console.log(arrivalCount);
+
+  function handleArrivalCountChange(dataFromButton, airportId) {
+    setCounts((prevCounts) => ({
+      ...prevCounts,
+      [airportId]: {
+        ...prevCounts[airportId],
+        arrivalCount: dataFromButton,
+      },
+    }));
   }
-  function handleAirportIDChange(dataFromButton) {
-    setAirportID(dataFromButton);
-  }
+
   function handleDepartures(dataFromButton){
     setDepartures(dataFromButton)
+    getDepartures(departures); // Pass data back to parent
     // console.log(departures);
   }
   function handleArrivals(dataFromButton){
     setArrivals(dataFromButton)
+    getArrivals(arrivals); // Pass data back to parent
     // console.log(arrivals);
   }
   
 
   function handleClick(){
-    // const airportID = event.target.id;
-    setAirportID(event.target.id); console.log(arrivalCount);
-    getAirportID(airportID);
-    setForceUpdate((prev) => !prev); // Toggle the dummy state to force a re-render
-  }
+    const clickedAirportID = event.target.id;
+    setAirportID(clickedAirportID);
+    // setRefreshTimestamp(new Date().toLocaleTimeString()); // Set the timestamp
+    // Set the timestamp for the specific airport
+    setRefreshTimestamp((prevTimestamps) => ({
+      ...prevTimestamps,
+      [clickedAirportID]: new Date().toLocaleTimeString(),
+    }));
 
-  function addAirports(data){
-    setAirports(data)
+    setForceUpdate((prev) => !prev); // Toggle the dummy state to force a re-render
   }
   
   const fetchAirports = async () => {
@@ -61,7 +75,7 @@ function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) 
         const data = await response.json();
 
         // Assuming data.departures is the array you want to update the state with
-        addAirports(data)
+        setAirports(data)
     } catch (error) {
         console.error('Error fetching data:', error.message);
     }
@@ -71,6 +85,10 @@ function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) 
   useEffect(() => {
     fetchAirports();
   }, []);
+
+  useEffect(() => {
+    getAirportID(airportID);
+  }, [airportID, getAirportID]);
 
 
   return (
@@ -83,6 +101,8 @@ function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) 
             <Table.HeaderCell>Number of Arrivals</Table.HeaderCell>
             <Table.HeaderCell>Number of Departures</Table.HeaderCell>
             <Table.HeaderCell>Last Refresh</Table.HeaderCell>
+            <Table.HeaderCell>Refresh</Table.HeaderCell>
+            <Table.HeaderCell>View Flights</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -91,8 +111,9 @@ function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) 
             <Table.Row key={index}>
               <Table.Cell >{airport.iata}</Table.Cell>
               <Table.Cell >{airport.name}</Table.Cell>
-              <Table.Cell id={airport.iata}>{arrivalCount}</Table.Cell>
-              <Table.Cell id={airport.iata}>{departureCount}</Table.Cell>
+              <Table.Cell id={airport.iata}>{counts[airport.iata]?.arrivalCount || " - "}</Table.Cell>
+              <Table.Cell id={airport.iata}>{counts[airport.iata]?.departureCount || " - "}</Table.Cell>
+              <Table.Cell id={airport.iata}>{refreshTimestamp[airport.iata] !== null ? refreshTimestamp[airport.iata] || 'N/A' : 'N/A'}</Table.Cell>
               <Table.Cell id={airport.iata}><button id={airport.iata} onClick={handleClick}> {textForButton} </button></Table.Cell>
             </Table.Row>
           ))}
@@ -100,10 +121,23 @@ function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) 
       </Table>
 
       {airportID !== "no id" && (
-        <DeparturesList key={forceUpdate} 
-          text={airportID} 
-          getCount={handleDepartureCountChange}
-          getDepartures={handleDepartures}/>
+        <>
+          {/* DeparturesList */}
+          <DeparturesList
+            key={`departures_${forceUpdate}`}
+            text={airportID}
+            getCount={(data) => handleDepartureCountChange(data, airportID)}
+            getDepartures={(data) => handleDepartures(data, airportID)}
+          />
+
+          {/* ArrivalsList */}
+          <ArrivalsList
+            key={`arrivals_${forceUpdate}`}
+            text={airportID}
+            getCount={(data) => handleArrivalCountChange(data, airportID)}
+            getArrivals={(data) => handleArrivals(data, airportID)}
+          />
+        </>
       )}
     </div>
   );

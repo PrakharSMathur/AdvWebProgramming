@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 
-function DeparturesList({text, getCount, getDepartures}) {
+function ArrivalsList({text, getCount, getArrivals}) {
   const [flights, setFlights] = useState([])
   const [numberOfFlights, setnumberOfFlights] = useState([])
 
   const airportID = text
   
-  const fetchDepartures = async (airportID) => {
+  const fetchArrivals = async (airportID) => {
     try {
         // Make the API call using fetch
         console.log(airportID)
-        let url = 'https://www.skyscanner.com/g/arrival-departure-svc/api/airports/'+airportID+'/departures';
+        let url = 'https://www.skyscanner.com/g/arrival-departure-svc/api/airports/'+airportID+'/arrivals';
         const response = await fetch(url);
 
         // Check if the response status is OK
@@ -21,8 +21,8 @@ function DeparturesList({text, getCount, getDepartures}) {
         // Extract data from the response
         const data = await response.json();
 
-        setFlights(data.departures)
-        setnumberOfFlights(data.departures.length);
+        setFlights(data.arrivals)
+        setnumberOfFlights(data.arrivals.length);
     } catch (error) {
         console.error('Error fetching data:', error.message);
     }
@@ -33,7 +33,7 @@ function DeparturesList({text, getCount, getDepartures}) {
     let isMounted = true;
 
     if (isMounted) {
-      fetchDepartures(airportID);
+      fetchArrivals(airportID);
     }
 
     // Cleanup function to set isMounted to false when the component unmounts
@@ -44,9 +44,9 @@ function DeparturesList({text, getCount, getDepartures}) {
 
   useEffect(() => {
     getCount(numberOfFlights);
-    getDepartures(flights);
-  }, [numberOfFlights, flights, getCount, getDepartures]);
+    getArrivals(flights);
+  }, [numberOfFlights, flights, getCount, getArrivals]);
 
 };
 
-export default DeparturesList
+export default ArrivalsList

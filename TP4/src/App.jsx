@@ -43,9 +43,9 @@ function App() {
           getArrivals={handleArrivals}
           getDepartures={handleDepartures}/>
         
-        {/* <FlightList airportID={airportID}
-          arrivals={arrivals}
-          departures={departures}> */}
+        <FlightList airportID={airportID}
+          arrivalsData={arrivals}
+          departuresData={departures}/>
         
       </div>
       <p className="read-the-docs">

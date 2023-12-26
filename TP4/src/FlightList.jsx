@@ -1,40 +1,69 @@
-import { useState} from 'react'
-import { Table } from 'semantic-ui-react'
+import React, { useState, useEffect } from 'react';
+import { Table, Container, Grid } from 'semantic-ui-react';
 
-function FlightList({airportID, arrivals, departures}) {
-  const [flights, setFlights] = useState([])
-  function addFlights(data){
-    setFlights(data)
-  }
-  addFlights(departures)
+function FlightList({ airportID, arrivalsData, departuresData }) {
+  const [arrivals, setArrivals] = useState([]);
+  const [departures, setDepartures] = useState([]);
+
+  useEffect(() => {
+    setArrivals(arrivalsData);
+  }, [arrivalsData]);
+
+  useEffect(() => {
+    setDepartures(departuresData);
+  }, [departuresData]);
 
   return (
-    <div>
-      <p>Hello {airportID}</p>
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Flight ID</Table.HeaderCell>
-            <Table.HeaderCell>Departure Time</Table.HeaderCell>
-            <Table.HeaderCell>Arrival Time</Table.HeaderCell>
-            <Table.HeaderCell>Airline Name</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+    <Container>
+      <Grid columns={2} divided>
+        <Grid.Row>
+          {/* Arrivals Table */}
+          <Grid.Column>
+            <Table celled>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Flight ID</Table.HeaderCell>
+                  <Table.HeaderCell>Arrival Time</Table.HeaderCell>
+                  <Table.HeaderCell>Airline Name</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {arrivals.map((flight, index) => (
+                  <Table.Row key={index}>
+                    <Table.Cell>{flight.flightNumber}</Table.Cell>
+                    <Table.Cell>{flight.scheduledArrivalTime}</Table.Cell>
+                    <Table.Cell>{flight.airlineName}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </Grid.Column>
 
-        <Table.Body>
-          {flights.map((flight, index) => (
-            <Table.Row key={index}>
-              <Table.Cell>{flight.flightNumber}</Table.Cell>
-              <Table.Cell>{flight.scheduledDepartureTime}</Table.Cell>
-              <Table.Cell>{flight.scheduledArrivalTime}</Table.Cell>
-              <Table.Cell>{flight.airlineName}</Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
-    </div>
+          {/* Departures Table */}
+          <Grid.Column>
+            <Table celled>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Flight ID</Table.HeaderCell>
+                  <Table.HeaderCell>Departure Time</Table.HeaderCell>
+                  <Table.HeaderCell>Airline Name</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {departures.map((flight, index) => (
+                  <Table.Row key={index}>
+                    <Table.Cell>{flight.flightNumber}</Table.Cell>
+                    <Table.Cell>{flight.scheduledDepartureTime}</Table.Cell>
+                    <Table.Cell>{flight.airlineName}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </Container>
   );
+}
 
-};
-
-export default FlightList
+export default FlightList;
