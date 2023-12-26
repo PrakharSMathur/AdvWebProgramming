@@ -7,9 +7,9 @@ import AirportList from './AirportList.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
-  let [dataForParagraph, setDataforParagraph] = useState("Loading in progress...")
+  let [airportID, setairportID] = useState("Loading in progress...")
   function giveButtonDataToParagraph(dataFromButton){
-          setDataforParagraph(dataFromButton)
+          setairportID(dataFromButton)
         }
 
   return (
@@ -30,7 +30,8 @@ function App() {
         
         <AirportList textForButton="Refresh"
           funtionFromParent={giveButtonDataToParagraph}/>
-        <DeparturesList text={dataForParagraph}/>
+        {setairportID("BRU")}
+        <DeparturesList text={airportID}/>
         {/* <AirportList /> */}
         {/* <DeparturesList text="BRU"/> */}
         

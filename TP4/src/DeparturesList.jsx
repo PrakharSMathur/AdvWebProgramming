@@ -13,6 +13,7 @@ function DeparturesList({text}) {
   const fetchDepartures = async (airportID) => {
     try {
         // Make the API call using fetch
+        console.log(airportID)
         let url = 'https://www.skyscanner.com/g/arrival-departure-svc/api/airports/'+airportID+'/departures';
         const response = await fetch(url);
 
