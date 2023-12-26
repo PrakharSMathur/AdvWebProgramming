@@ -7,10 +7,14 @@ import AirportList from './AirportList.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
-  let [airportID, setairportID] = useState("Loading in progress...")
+  let [airportID, setAirportID] = useState("Loading in progress...")
   function giveButtonDataToParagraph(dataFromButton){
-          setairportID(dataFromButton)
+          //setAirportID(dataFromButton)
         }
+  function handleAirportIDChange(dataFromButton) {
+    setAirportID(dataFromButton);
+
+  }
 
   return (
     <>
@@ -22,16 +26,20 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Arrivals + Departures</h1>
+      <h1>Arrivals & Departures</h1>
       <div className="card">
         {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button> */}
         
         <AirportList textForButton="Refresh"
-          funtionFromParent={giveButtonDataToParagraph}/>
-        {setairportID("BRU")}
-        <DeparturesList text={airportID}/>
+          getAirportID={handleAirportIDChange}/>
+        {/* <DeparturesList text={airportID}/> */}
+        
+        {airportID !== "Loading in progress..." && (
+          <DeparturesList text={airportID} />
+        )}
+
         {/* <AirportList /> */}
         {/* <DeparturesList text="BRU"/> */}
         

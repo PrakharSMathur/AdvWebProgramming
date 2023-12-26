@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Table } from 'semantic-ui-react'
 
-function AirportList({textForButton, funtionFromParent}) {
+function AirportList({textForButton, getAirportID}) {
   const [airports, setAirports] = useState([])
 
   function handleClick(){
-    funtionFromParent(data)
+    const airportID = event.target.id;
+    console.log(airportID);
+    getAirportID(airportID);
   }
 
   function addAirports(data){
     setAirports(data)
-      // Update later
   }
   
   const fetchAirports = async () => {
@@ -27,7 +28,6 @@ function AirportList({textForButton, funtionFromParent}) {
         const data = await response.json();
 
         // Assuming data.departures is the array you want to update the state with
-        //console.log(data)
         addAirports(data)
     } catch (error) {
         console.error('Error fetching data:', error.message);
@@ -56,9 +56,9 @@ function AirportList({textForButton, funtionFromParent}) {
             <Table.Row key={index}>
               <Table.Cell>{airport.iata}</Table.Cell>
               <Table.Cell>{airport.name}</Table.Cell>
-              <Table.Cell><button id={airport.iata} onClick={handleClick}>{textForButton}</button></Table.Cell>
-              <Table.Cell><button id={airport.iata} onClick={handleClick}>{textForButton}</button></Table.Cell>
-              <Table.Cell><button id={airport.iata} onClick={handleClick}>{textForButton}</button></Table.Cell>
+              <Table.Cell> - - </Table.Cell>
+              <Table.Cell> - - </Table.Cell>
+              <Table.Cell><button id={airport.iata} onClick={handleClick}> {textForButton} </button></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
