@@ -3,28 +3,42 @@ import { Table } from 'semantic-ui-react'
 import DeparturesList from './DeparturesList.jsx'
 
 
-function AirportList({textForButton, getAirportID}) {
+function AirportList({textForButton, getAirportID, getArrivals, getDepartures}) {
   const [airports, setAirports] = useState([])
+  const [departures, setDepartures] = useState([])
+  const [arrivals, setArrivals] = useState([])
+  getArrivals(arrivals);
+  getDepartures(departures);
+
   const [forceUpdate, setForceUpdate] = useState(false);
   let [airportID, setAirportID] = useState("no id")
   let [departureCount, setDepartureCount] = useState(" - ")
   let [arrivalCount, setArrivalCount] = useState(" - ")
+
   function handleDepartureCountChange(dataFromButton){
     setDepartureCount(dataFromButton)
-    console.log(departureCount);
+    // console.log(departureCount);
   }
   function handleArrivalCountChange(dataFromButton){
     setArrivalCount(dataFromButton)
-    console.log(arrivalCount);
+    // console.log(arrivalCount);
   }
   function handleAirportIDChange(dataFromButton) {
     setAirportID(dataFromButton);
+  }
+  function handleDepartures(dataFromButton){
+    setDepartures(dataFromButton)
+    // console.log(departures);
+  }
+  function handleArrivals(dataFromButton){
+    setArrivals(dataFromButton)
+    // console.log(arrivals);
   }
   
 
   function handleClick(){
     // const airportID = event.target.id;
-    setAirportID(event.target.id);
+    setAirportID(event.target.id); console.log(arrivalCount);
     getAirportID(airportID);
     setForceUpdate((prev) => !prev); // Toggle the dummy state to force a re-render
   }
@@ -53,9 +67,11 @@ function AirportList({textForButton, getAirportID}) {
     }
   };
 
+
   useEffect(() => {
     fetchAirports();
   }, []);
+
 
   return (
     <div>
@@ -73,8 +89,8 @@ function AirportList({textForButton, getAirportID}) {
         <Table.Body>
           {airports.map((airport, index) => (
             <Table.Row key={index}>
-              <Table.Cell id={airport.iata}>{airport.iata}</Table.Cell>
-              <Table.Cell id={airport.iata}>{airport.name}</Table.Cell>
+              <Table.Cell >{airport.iata}</Table.Cell>
+              <Table.Cell >{airport.name}</Table.Cell>
               <Table.Cell id={airport.iata}>{arrivalCount}</Table.Cell>
               <Table.Cell id={airport.iata}>{departureCount}</Table.Cell>
               <Table.Cell id={airport.iata}><button id={airport.iata} onClick={handleClick}> {textForButton} </button></Table.Cell>
@@ -86,7 +102,8 @@ function AirportList({textForButton, getAirportID}) {
       {airportID !== "no id" && (
         <DeparturesList key={forceUpdate} 
           text={airportID} 
-          getCount={handleDepartureCountChange}/>
+          getCount={handleDepartureCountChange}
+          getDepartures={handleDepartures}/>
       )}
     </div>
   );

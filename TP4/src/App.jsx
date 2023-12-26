@@ -2,23 +2,23 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import DeparturesList from './DeparturesList.jsx'
+import FlightList from './FlightList.jsx'
 import AirportList from './AirportList.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
   let [airportID, setAirportID] = useState("no id")
-  let [departureCount, setDepartureCount] = useState(" - ")
-  let [arrivalCount, setArrivalCount] = useState(" - ")
-  function handleDepartureCountChange(dataFromButton){
-    setDepartureCount(dataFromButton)
-    console.log(departureCount);
+  let [departures, setDepartures] = useState([])
+  let [arrivals, setArrivals] = useState([])
+  function handleDepartures(dataFromButton){
+    setDepartures(dataFromButton)
+    console.log(departures);
   }
-  function handleArrivalCountChange(dataFromButton){
-    setArrivalCount(dataFromButton)
-    console.log(arrivalCount);
+  function handleArrivals(dataFromButton){
+    setArrivals(dataFromButton)
+    console.log(arrivals);
   }
-  function handleAirportIDChange(dataFromButton) {
+  function handleAirportID(dataFromButton) {
     setAirportID(dataFromButton);
   }
 
@@ -39,16 +39,13 @@ function App() {
         </button> */}
         
         <AirportList textForButton="Refresh"
-          getAirportID={handleAirportIDChange}/>
-        {/* <DeparturesList text={airportID}/> */}
+          getAirportID={handleAirportID}
+          getArrivals={handleArrivals}
+          getDepartures={handleDepartures}/>
         
-        {/* {airportID !== "no id" && (
-          <DeparturesList text={airportID} 
-            getDepartureCount={handleDepartureCountChange}/>
-        )} */}
-
-        {/* <AirportList /> */}
-        {/* <DeparturesList text="BRU"/> */}
+        {/* <FlightList airportID={airportID}
+          arrivals={arrivals}
+          departures={departures}> */}
         
       </div>
       <p className="read-the-docs">

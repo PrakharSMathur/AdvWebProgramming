@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Table } from 'semantic-ui-react'
+// import { Table } from 'semantic-ui-react'
 
-function DeparturesList({text, getCount}) {
+function DeparturesList({text, getCount, getDepartures}) {
   const [flights, setFlights] = useState([])
   const [numberOfFlights, setnumberOfFlights] = useState([])
   const airportID = text
@@ -9,6 +9,7 @@ function DeparturesList({text, getCount}) {
     setFlights(data)
   }
   getCount(numberOfFlights);
+  getDepartures(flights);
   
   const fetchDepartures = async (airportID) => {
     try {
@@ -26,7 +27,6 @@ function DeparturesList({text, getCount}) {
         const data = await response.json();
 
         // Assuming data.departures is the array you want to update the state with
-        console.log(data.departures)
         addFlights(data.departures)
         setnumberOfFlights(data.departures.length);
     } catch (error) {
@@ -38,32 +38,32 @@ function DeparturesList({text, getCount}) {
     fetchDepartures(airportID); // Fetch data when the component mounts
   }, []);
 
-  return (
-    <div>
-      <p>Hello {text} or {airportID}</p>
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Flight ID</Table.HeaderCell>
-            <Table.HeaderCell>Departure Time</Table.HeaderCell>
-            <Table.HeaderCell>Arrival Time</Table.HeaderCell>
-            <Table.HeaderCell>Airline Name</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+  // return (
+  //   <div>
+  //     <p>Hello {text} or {airportID}</p>
+  //     <Table celled>
+  //       <Table.Header>
+  //         <Table.Row>
+  //           <Table.HeaderCell>Flight ID</Table.HeaderCell>
+  //           <Table.HeaderCell>Departure Time</Table.HeaderCell>
+  //           <Table.HeaderCell>Arrival Time</Table.HeaderCell>
+  //           <Table.HeaderCell>Airline Name</Table.HeaderCell>
+  //         </Table.Row>
+  //       </Table.Header>
 
-        <Table.Body>
-          {flights.map((flight, index) => (
-            <Table.Row key={index}>
-              <Table.Cell>{flight.flightNumber}</Table.Cell>
-              <Table.Cell>{flight.scheduledDepartureTime}</Table.Cell>
-              <Table.Cell>{flight.scheduledArrivalTime}</Table.Cell>
-              <Table.Cell>{flight.airlineName}</Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
-    </div>
-  );
+  //       <Table.Body>
+  //         {flights.map((flight, index) => (
+  //           <Table.Row key={index}>
+  //             <Table.Cell>{flight.flightNumber}</Table.Cell>
+  //             <Table.Cell>{flight.scheduledDepartureTime}</Table.Cell>
+  //             <Table.Cell>{flight.scheduledArrivalTime}</Table.Cell>
+  //             <Table.Cell>{flight.airlineName}</Table.Cell>
+  //           </Table.Row>
+  //         ))}
+  //       </Table.Body>
+  //     </Table>
+  //   </div>
+  // );
 
 };
 
