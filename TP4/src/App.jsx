@@ -7,19 +7,23 @@ import AirportList from './AirportList.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
-  let [airportID, setAirportID] = useState("no id")
-  let [departures, setDepartures] = useState([])
-  let [arrivals, setArrivals] = useState([])
-  function handleDepartures(dataFromButton){
-    setDepartures(dataFromButton)
+  const [airportID, setAirportID] = useState("no id")
+  const [departures, setDepartures] = useState([])
+  const [arrivals, setArrivals] = useState([])
+  const [viewFlight, setViewFlight] = useState(false);
+  function handleDepartures(data){
+    setDepartures(data)
     console.log(departures);
   }
-  function handleArrivals(dataFromButton){
-    setArrivals(dataFromButton)
+  function handleArrivals(data){
+    setArrivals(data)
     console.log(arrivals);
   }
-  function handleAirportID(dataFromButton) {
-    setAirportID(dataFromButton);
+  function handleAirportID(data) {
+    setAirportID(data);
+  }
+  function handleViewFlight(data){
+    setViewFlight(data);
   }
 
   return (
@@ -38,14 +42,20 @@ function App() {
           count is {count}
         </button> */}
         
-        <AirportList textForButton="Refresh"
+        <AirportList textForRefreshButton="Refresh"
+          textForViewFlightsButton="View flights"
           getAirportID={handleAirportID}
           getArrivals={handleArrivals}
-          getDepartures={handleDepartures}/>
+          getDepartures={handleDepartures}
+          getViewFlightBool={handleViewFlight}/>
         
-        <FlightList airportID={airportID}
-          arrivalsData={arrivals}
-          departuresData={departures}/>
+        {viewFlight && (
+          <FlightList
+            airportID={airportID}
+            arrivalsData={arrivals}
+            departuresData={departures}
+          />
+        )}
         
       </div>
       <p className="read-the-docs">
