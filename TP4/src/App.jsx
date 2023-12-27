@@ -1,68 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import FlightList from './FlightList.jsx'
-import AirportList from './AirportList.jsx'
+// import { useState } from 'react'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
+// import './App.css'
+// import FlightList from './FlightList.jsx'
+// import AirportList from './AirportList.jsx'
+// import MenuBar from './MenuBar.jsx'
+//
+// function App() {
+//   const [airportID, setAirportID] = useState("no id")
+//   const [departures, setDepartures] = useState([])
+//   const [arrivals, setArrivals] = useState([])
+//   const [viewFlight, setViewFlight] = useState(false);
+//   // function handleDepartures(data){
+//   //   setDepartures(data)
+//   //   console.log(departures);
+//   // }
+//   // function handleArrivals(data){
+//   //   setArrivals(data)
+//   //   console.log(arrivals);
+//   // }
+//   // function handleAirportID(data) {
+//   //   setAirportID(data);
+//   // }
+//   // function handleViewFlight(data){
+//   //   setViewFlight(data);
+//   // }
+//
+//   return (
+//     <>
+//        <div className="card">
+//
+        {/*<AirportList textForButton={"Refresh"} textForRefreshButton="Refresh"*/}
+        {/*  textForViewFlightsButton="View flights"*/}
+        {/*  getAirportID={handleAirportID}*/}
+        {/*  getArrivals={handleArrivals}*/}
+        {/*  getDepartures={handleDepartures}*/}
+        {/*  getViewFlightBool={handleViewFlight}/>*/}
+//
+//
+        {/*{viewFlight && (*/}
+        {/*  <FlightList*/}
+        {/*    airportID={airportID}*/}
+        {/*    arrivalsData={arrivals}*/}
+        {/*    departuresData={departures}*/}
+        {/*  />*/}
+        {/*)}*/}
+//         {/*<AirportList textForButton="Refresh"*/}
+//         {/*  getAirportID={handleAirportID}*/}
+//         {/*  getArrivals={handleArrivals}*/}
+//         {/*  getDepartures={handleDepartures}/>*/}
+//
+//         {/* <FlightList airportID={airportID}
+//           arrivals={arrivals}
+//           departures={departures}> */}
+//
+//       </div>
+//       <p className="read-the-docs">
+//         Authors: Ankush KUMAR & Prakhar MATHUR
+//       </p>
+//     </>
+//   )
+// }
+//
+// export default App
+
+
+// App.jsx
+
+import { useState } from 'react';
+import MenuBar from './MenuBar.jsx';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [airportID, setAirportID] = useState("no id")
-  const [departures, setDepartures] = useState([])
-  const [arrivals, setArrivals] = useState([])
-  const [viewFlight, setViewFlight] = useState(false);
-  function handleDepartures(data){
-    setDepartures(data)
-    console.log(departures);
-  }
-  function handleArrivals(data){
-    setArrivals(data)
-    console.log(arrivals);
-  }
-  function handleAirportID(data) {
-    setAirportID(data);
-  }
-  function handleViewFlight(data){
-    setViewFlight(data);
-  }
+  const [selectedAirport, setSelectedAirport] = useState(null);
+
+  const handleAirportClick = (airportID) => {
+    setSelectedAirport(airportID);
+  };
 
   return (
-    <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <MenuBar
+            onAirportClick={handleAirportClick}
+            selectedAirport={selectedAirport}
+        />
       </div>
-      <h1>Arrivals & Departures</h1>
-      <div className="card">
-        {/* <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button> */}
-        
-        <AirportList textForRefreshButton="Refresh"
-          textForViewFlightsButton="View flights"
-          getAirportID={handleAirportID}
-          getArrivals={handleArrivals}
-          getDepartures={handleDepartures}
-          getViewFlightBool={handleViewFlight}/>
-        
-        {viewFlight && (
-          <FlightList
-            airportID={airportID}
-            arrivalsData={arrivals}
-            departuresData={departures}
-          />
-        )}
-        
-      </div>
-      <p className="read-the-docs">
-        Authors: Ankush KUMAR & Prakhar MATHUR
-      </p>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;

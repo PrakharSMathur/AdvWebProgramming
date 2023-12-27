@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Table, Container, Grid } from 'semantic-ui-react';
 
+// eslint-disable-next-line react/prop-types
 function FlightList({ airportID, arrivalsData, departuresData }) {
   const [arrivals, setArrivals] = useState([]);
   const [departures, setDepartures] = useState([]);
+// const [arrivalCount,setArrivalCount]=useState(0);
+// const [departureCount, setDepartureCount]=useState(0);
+
+  // function handleArrivals(data){
+  //   setArrivals(data);
+  // }
+  //
+  // function handleDepartures(data){
+  //   setDepartures(data);
+  // }
 
   useEffect(() => {
     setArrivals(arrivalsData);
