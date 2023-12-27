@@ -1,0 +1,15 @@
+.custom-menu {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f4f4f4; /* Set your desired background color */
+    border-bottom: 1px solid #ddd; /* Add a border at the bottom */
+}
+
+.custom-menu .item {
+    padding: 10px 20px; /* Adjust padding for better spacing */
+    cursor: pointer;
+}
+
+.custom-menu .item.active {
+    background-color: #ddd; /* Set a different background color for the active tab */
+}

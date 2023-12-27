@@ -67,23 +67,15 @@
 
 // App.jsx
 
-import { useState } from 'react';
+
 import MenuBar from './MenuBar.jsx';
 import './App.css';
 
 function App() {
-  const [selectedAirport, setSelectedAirport] = useState(null);
-
-  const handleAirportClick = (airportID) => {
-    setSelectedAirport(airportID);
-  };
 
   return (
       <div>
-        <MenuBar
-            onAirportClick={handleAirportClick}
-            selectedAirport={selectedAirport}
-        />
+        <MenuBar/>
       </div>
   );
 }

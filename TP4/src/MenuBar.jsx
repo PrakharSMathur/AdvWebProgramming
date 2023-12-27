@@ -50,7 +50,7 @@
 // }
 //
 // export default MenuBar;
-
+import './MenuStyle.css'
 import {useState} from 'react';
 import {Menu} from 'semantic-ui-react';
 import AirportList from './AirportList';
@@ -83,15 +83,17 @@ function MenuBar() {
 
     function handleViewFlight(data) {
         setViewFlight(data);
+        console.log(viewFlight);
     }
 
     return (
         <div>
-            <Menu attached='top' tabular>
+            <Menu attached='top' tabular style={menuStyle}>
                 <Menu.Item
                     name='airport'
                     active={activeTab === 'airport'}
                     onClick={() => handleTabChange('airport')}
+                    style={menuItemStyle}
                 >
                     Airport
                 </Menu.Item>
@@ -99,6 +101,7 @@ function MenuBar() {
                     name='flights'
                     active={activeTab === 'flights'}
                     onClick={() => handleTabChange('flights')}
+                    style={menuItemStyle}
                 >
                     Flights
                 </Menu.Item>
@@ -112,8 +115,8 @@ function MenuBar() {
                              getDepartures={handleDepartures}
                              getViewFlightBool={handleViewFlight}/>
             )}
-
-            {activeTab === 'flights' && selectedAirport && viewFlight && (
+            {/*&& viewFlight*/}
+            {activeTab === 'flights' && selectedAirport  && (
                 <FlightList
                     airportID={selectedAirport}
                     arrivalsData={arrivals}
@@ -126,6 +129,19 @@ function MenuBar() {
     );
 }
 
+
+
+const menuStyle = {
+    display: 'flex',
+    justifyContent: 'space-around',
+    backgroundColor: '#f4f4f4', // Set your desired background color
+    borderBottom: '1px solid #ddd', // Add a border at the bottom
+};
+
+const menuItemStyle = {
+    padding: '10px 20px', // Adjust padding for better spacing
+    cursor: 'pointer',
+};
 export default MenuBar;
 
 
