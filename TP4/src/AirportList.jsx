@@ -82,6 +82,7 @@ function AirportList({textForRefreshButton, textForViewFlightsButton, getAirport
 
         // Assuming data.departures is the array you want to update the state with
         setAirports(data);
+        console.log(data);
         filterAirports(data);
     } catch (error) {
         console.error('Error fetching data:', error.message);
