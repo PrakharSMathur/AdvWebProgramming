@@ -4,15 +4,14 @@ import DeparturesList from './DeparturesList.jsx'
 import ArrivalsList from './ArrivalsList.jsx'
 import { MapContainer, TileLayer, Marker, Popup, LayersControl, LayerGroup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import SplitPane from "react-split-pane"
+import SplitPane from 'react-split-pane';
 
 
-function AirportList({textForRefreshButton, textForViewFlightsButton, getAirportID, getArrivals, getDepartures, getViewFlightBool}) {
+function AirportList({textForRefreshButton, textForViewFlightsButton, getArrivals, getDepartures, getAirport}) {
   const [airports, setAirports] = useState([]);
   const [departures, setDepartures] = useState([]);
   const [arrivals, setArrivals] = useState([]);
   const [forceUpdate, setForceUpdate] = useState(false);
-  const [viewFlight, setViewFlight] = useState(false);
   const [refreshTimestamp, setRefreshTimestamp] = useState({});
   const [filteredAirports, setFilteredAirports] = useState([]);
   const [searchInput, setSearchInput] = useState('');
@@ -79,10 +78,9 @@ function AirportList({textForRefreshButton, textForViewFlightsButton, getAirport
     setForceUpdate((prev) => !prev); // Toggle the dummy state to force a re-render
   }
 
-  function handleViewFlightsClick(){
-    setViewFlight((prev) => !prev);
+  function handleViewFlightsClick(airport){
     handleRefreshClick();
-    getViewFlightBool(viewFlight);
+    getAirport(airport);  // share selected airport data
   }
   
   const fetchAirports = async () => {
@@ -129,9 +127,6 @@ function AirportList({textForRefreshButton, textForViewFlightsButton, getAirport
     fetchAirports();
   }, []);
 
-  useEffect(() => {
-    getAirportID(airportID);
-  }, [airportID, getAirportID]);
 
   // Function to get markers for airports with refresh timestamps
   const RefreshedMarkers = refreshedAirports
@@ -155,7 +150,7 @@ function AirportList({textForRefreshButton, textForViewFlightsButton, getAirport
             <div>Latitude: {airport.lat}</div>
             <div>Longitude: {airport.lon}</div>
             <div>
-              <button onClick={() => handleViewFlightsClick(airport.iata)}>
+              <button id={airport.iata} onClick={() => handleViewFlightsClick(airport)}>
                 View Flights
               </button>
             </div>
@@ -247,7 +242,7 @@ function AirportList({textForRefreshButton, textForViewFlightsButton, getAirport
                     </button>
                   </Table.Cell>
                   <Table.Cell>
-                    <button id={airport.iata} onClick={handleViewFlightsClick}>
+                    <button id={airport.iata} onClick={() => handleViewFlightsClick(airport)}>
                       {' '}{textForViewFlightsButton}{' '}
                     </button>
                   </Table.Cell>

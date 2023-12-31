@@ -9,7 +9,6 @@ function MenuBar() {
     const [selectedAirport, setSelectedAirport] = useState(null);
     const [arrivals, setArrivals] = useState([])
     const [departures, setDepartures] = useState([])
-    const [viewFlight, setViewFlight] = useState(false);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -25,12 +24,9 @@ function MenuBar() {
         // console.log(arrivals);
     }
 
-    function handleAirportID(data) {
+    function handleAirport(data) {
+        // setViewFlight(data);
         setSelectedAirport(data);
-    }
-
-    function handleViewFlight(data) {
-        setViewFlight(data);
         // Switch to the "flights" tab when clicking "View Flights"
         setActiveTab('flights');
     }
@@ -59,14 +55,13 @@ function MenuBar() {
             {activeTab === 'airport' && (
                 <AirportList textForRefreshButton="Refresh"
                              textForViewFlightsButton="View flights"
-                             getAirportID={handleAirportID}
                              getArrivals={handleArrivals}
                              getDepartures={handleDepartures}
-                             getViewFlightBool={handleViewFlight}/>
+                             getAirport={handleAirport}/>
             )}
-            {activeTab === 'flights' && selectedAirport  && (
+            {activeTab === 'flights' && selectedAirport.iata  && (
                 <FlightList
-                    airportID={selectedAirport}
+                    airport={selectedAirport}
                     arrivalsData={arrivals}
                     departuresData={departures}
                 />
