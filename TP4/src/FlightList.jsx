@@ -133,12 +133,15 @@
 //     cursor: 'pointer',
 // };
 // export default FlightList;
+
+
 import React, { useState, useEffect } from 'react';
-import { Table, Container, Grid, Menu, Segment } from 'semantic-ui-react';
+import { Table, Container, Menu, Segment } from 'semantic-ui-react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import SplitPane from 'react-split-pane';
 import airportsData from './airports.json'; // Assuming you save the JSON file locally
 
-function FlightList({ airportID, arrivalsData, departuresData }) {
+function FlightList({ airportID, arrivalsData, departuresData, switchToAirportList }) {
     const [arrivals, setArrivals] = useState([]);
     const [departures, setDepartures] = useState([]);
     const [activeTab, setActiveTab] = useState('arrivals');
@@ -157,7 +160,7 @@ function FlightList({ airportID, arrivalsData, departuresData }) {
 
     const getAirportLatLng = (iataCode) => {
         const airport = airportsData.find((airport) => airport.iata === iataCode);
-        return airport ? [airport.lat, airport.lon] : null;
+        return airport ? [airport.lat, airport.lon] : [0, 0]; // Return [0, 0] if airport data is not found
     };
 
     const getMarkersAndLines = () => {
@@ -167,37 +170,52 @@ function FlightList({ airportID, arrivalsData, departuresData }) {
         const tableData = activeTab === 'arrivals' ? arrivals : departures;
         const destinationIata = activeTab === 'arrivals' ? airportID : null;
 
-        const centerLatLng = getAirportLatLng(arrivals[0].departureAirportCode);
+        if (tableData.length > 0) {
+            const centerLatLng = getAirportLatLng(airportID);
 
-        tableData.forEach((flight) => {
-            const originLatLng = getAirportLatLng(flight.departureAirportCode);
-            const destinationLatLng =
-                activeTab === 'arrivals'
-                    ? getAirportLatLng(destinationIata)
-                    : getAirportLatLng(flight.arrivalAirportCode);
+            tableData.forEach((flight) => {
+                if (flight && flight.departureAirportCode) {
+                    const originLatLng = getAirportLatLng(flight.departureAirportCode);
+                    const destinationLatLng =
+                        activeTab === 'arrivals'
+                            ? getAirportLatLng(destinationIata)
+                            : getAirportLatLng(flight.arrivalAirportCode);
 
-            if (originLatLng && destinationLatLng) {
-                // Subtracting the center coordinates to anchor the markers and lines to the map
-                const adjustedOrigin = [originLatLng[0] - centerLatLng[0], originLatLng[1] - centerLatLng[1]];
-                const adjustedDestination = [destinationLatLng[0] - centerLatLng[0], destinationLatLng[1] - centerLatLng[1]];
+                    if (originLatLng && destinationLatLng) {
+                        const adjustedOrigin = [originLatLng[0] - centerLatLng[0], originLatLng[1] - centerLatLng[1]];
+                        const adjustedDestination = [
+                            destinationLatLng[0] - centerLatLng[0],
+                            destinationLatLng[1] - centerLatLng[1],
+                        ];
 
-                markers.push(
-                    <Marker key={`marker-${flight.flightNumber}`} position={adjustedOrigin}>
-                        <Popup>{flight.departureAirportCode}</Popup>
-                    </Marker>
-                );
+                        markers.push(
+                            <Marker key={`marker-${flight.flightNumber}`} position={adjustedOrigin}>
+                                <Popup>{flight.departureAirportCode}</Popup>
+                            </Marker>
+                        );
 
-                markers.push(
-                    <Marker key={`marker-${flight.flightNumber}-destination`} position={adjustedDestination}>
-                        <Popup>{activeTab === 'arrivals' ? airportID : flight.arrivalAirportCode}</Popup>
-                    </Marker>
-                );
+                        markers.push(
+                            <Marker
+                                key={`marker-${flight.flightNumber}-destination`}
+                                position={adjustedDestination}
+                            >
+                                <Popup>
+                                    {activeTab === 'arrivals' ? airportID : flight.arrivalAirportCode}
+                                </Popup>
+                            </Marker>
+                        );
 
-                lines.push(
-                    <Polyline key={`line-${flight.flightNumber}`} positions={[adjustedOrigin, adjustedDestination]} color="blue" />
-                );
-            }
-        });
+                        lines.push(
+                            <Polyline
+                                key={`line-${flight.flightNumber}`}
+                                positions={[adjustedOrigin, adjustedDestination]}
+                                color="blue"
+                            />
+                        );
+                    }
+                }
+            });
+        }
 
         return { markers, lines };
     };
@@ -224,8 +242,8 @@ function FlightList({ airportID, arrivalsData, departuresData }) {
                     </Menu.Item>
                 </Menu>
 
-                <Grid columns={2} stackable textAlign={'center'}>
-                    <Grid.Column>
+                <SplitPane split="vertical" minSize={100} defaultSize={400}>
+                    <div>
                         {activeTab === 'arrivals' && (
                             <Table celled>
                                 {/* Arrival table content */}
@@ -279,9 +297,9 @@ function FlightList({ airportID, arrivalsData, departuresData }) {
                                 </Table.Body>
                             </Table>
                         )}
-                    </Grid.Column>
+                    </div>
 
-                    <Grid.Column>
+                    <div>
                         <MapContainer center={[0, 0]} zoom={2} style={{ height: '500px', width: '100%' }}>
                             <TileLayer
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -290,8 +308,10 @@ function FlightList({ airportID, arrivalsData, departuresData }) {
                             {markers}
                             {lines}
                         </MapContainer>
-                    </Grid.Column>
-                </Grid>
+                    </div>
+                </SplitPane>
+
+                <button onClick={switchToAirportList}>Switch to Airport List</button>
             </Segment>
         </Container>
     );

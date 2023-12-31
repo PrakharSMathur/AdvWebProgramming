@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 function DeparturesList({text, getCount, getDepartures}) {
   const [flights, setFlights] = useState([])
   const [numberOfFlights, setnumberOfFlights] = useState([])
-
   const airportID = text
+  const isMounted = useRef(true);
   
   const fetchDepartures = async (airportID) => {
     try {
@@ -13,16 +13,28 @@ function DeparturesList({text, getCount, getDepartures}) {
         let url = 'https://www.skyscanner.com/g/arrival-departure-svc/api/airports/'+airportID+'/departures';
         const response = await fetch(url);
 
-        // Check if the response status is OK
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        if (isMounted.current) {
+
+          // Check if the response status is OK
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          // Extract data from the response
+          const data = await response.json();
+
+          // setFlights(data.departures)
+          // Set state only if the component is still mounted
+          setFlights((prevFlights) => {
+            if (prevFlights.length === 0) {
+              return data.departures;
+            } else {
+              return prevFlights;
+            }
+          });
+          setnumberOfFlights(data.departures.length);
+          
         }
-
-        // Extract data from the response
-        const data = await response.json();
-
-        setFlights(data.departures)
-        setnumberOfFlights(data.departures.length);
     } catch (error) {
         console.error('Error fetching data:', error.message);
     }
@@ -30,24 +42,20 @@ function DeparturesList({text, getCount, getDepartures}) {
 
   useEffect(() => {
     // Check if the component is mounted before calling fetchDepartures
-    let isMounted = true;
+    isMounted.current = true;
 
-    if (isMounted) {
-      fetchDepartures(airportID);
-    }
+    fetchDepartures(airportID);
 
     // Cleanup function to set isMounted to false when the component unmounts
     return () => {
-      isMounted = false;
+      isMounted.current = false;
     };
   }, [airportID]);
 
   useEffect(() => {
     getCount(numberOfFlights);
     getDepartures(flights);
-
   }, [numberOfFlights, flights, getCount, getDepartures]);
-
 
 };
 

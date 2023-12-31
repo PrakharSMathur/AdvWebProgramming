@@ -45,7 +45,6 @@ function ArrivalsList({text, getCount, getArrivals}) {
   useEffect(() => {
     getCount(numberOfFlights);
     getArrivals(flights);
-
   }, [numberOfFlights, flights, getCount, getArrivals]);
 
 };
